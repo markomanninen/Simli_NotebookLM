@@ -332,7 +332,13 @@ class AvatarPlayer {
                 return;
             }
 
+            // Start the first segment immediately for both avatars
+            if (index == 0) {
+                this.ws.send(JSON.stringify({ start_time: 0.00, end_time: 0.01 }));
+            }
+
             const delay = start_time - (Date.now() / 1000 - referenceStartTime);
+
             if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay * 1000));
 
             if (this.pauseRequested) {
