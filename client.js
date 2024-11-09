@@ -552,8 +552,8 @@ async function setupAvatarRecording(videoRef1, videoRef2, audioRef1, audioRef2) 
     function drawFrame() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         const halfWidth = canvas.width / 2;
-        if (videoRef2.readyState === 4) context.drawImage(videoRef2, 0, 0, halfWidth, canvas.height);
-        if (videoRef1.readyState === 4) context.drawImage(videoRef1, halfWidth, 0, halfWidth, canvas.height);
+        if (videoRef1.readyState === 4) context.drawImage(videoRef1, 0, 0, halfWidth, canvas.height);
+        if (videoRef2.readyState === 4) context.drawImage(videoRef2, halfWidth, 0, halfWidth, canvas.height);
         requestAnimationFrame(drawFrame);
     }
     drawFrame();
