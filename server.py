@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 import asyncio
 import logging
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, HTTPException
@@ -7,6 +8,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from diarization import diarize_audio, initialize_pipeline
 import datetime  
 import random
+
+# Load environment variables from .env file
+load_dotenv()
+
+if "USERPROFILE" in os.environ:
+    # Windows environment
+    downloads_path = Path(os.environ["USERPROFILE"]) / "Downloads"
+elif "HOME" in os.environ:
+    # UNIX-like environment, typical in Linux and MacOS
+    downloads_path = Path(os.environ["HOME"]) / "Downloads"
+else:
+    # Fallback if neither environment variable is set
+    raise EnvironmentError("Unable to locate home directory.")
 
 print("Loading commencing...")
 
@@ -30,7 +44,7 @@ app.add_middleware(
 @app.get("/get_env_vars")
 async def get_env_vars():
     return {
-        "API_KEY": os.getenv("API_KEY"),
+        "API_KEY": os.getenv("SIMLI_API_KEY"),
         "FACE_ID_SPEAKER_00": os.getenv("FACE_ID_SPEAKER_00"),
         "FACE_ID_SPEAKER_01": os.getenv("FACE_ID_SPEAKER_01"),
     }
@@ -124,12 +138,12 @@ async def diarize_audio_endpoint(audio: UploadFile = File(...)):
 # Delete any previous previous webm file
 @app.post("/delete_previous_recording")
 async def delete_previous_recording():
-    downloads_path = Path(os.environ["USERPROFILE"]) / "Downloads" / "avatar_recording.webm"
+    avatar_video_path = downloads_path / "avatar_recording.webm"
 
-    logger.info(f"Checking for file at path: {downloads_path}")
+    logger.info(f"Checking for file at path: {avatar_video_path}")
 
-    if downloads_path.exists():
-        downloads_path.unlink()  
+    if avatar_video_path.exists():
+        avatar_video_path.unlink()  
         logger.info("Previous avatar recording deleted successfully.")
         return {"message": "Previous avatar recording deleted successfully."}
     else:
@@ -141,7 +155,6 @@ async def delete_previous_recording():
 async def sync_audio_video():
     """Endpoint to detect black duration and sync audio and video."""
     
-    downloads_path = Path(os.environ["USERPROFILE"]) / "Downloads"
     avatar_video_path = downloads_path / "avatar_recording.webm"
     audio_path = Path("latest_audio.wav")  
 
