@@ -53,10 +53,6 @@ def diarize_audio(audio_file_path, model, num_speakers=None):
 
     # Write results to a text file in the expected format
     with open("diarization_results.txt", "w") as f:
-        
-        # Init speakers from the beginning
-        #f.write(f"SPEAKER_00: 0.00 to 0.00\n")
-        #f.write(f"SPEAKER_01: 0.00 to 0.00\n")
             
         for turn, _, speaker in diarization.itertracks(yield_label=True):
             start_time = turn.start
