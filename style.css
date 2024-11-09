@@ -29,21 +29,25 @@ h1, h2 {
 .avatar-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
     padding: 20px 0;
     width: 100%;
     max-width: 475px;
     background-color: #2a2a40;
-    border-radius: 8px;
 }
 
+#avatar1 {
+    z-index: 11;
+}
+
+#avatar2 {
+    margin-left: -44px;
+    z-index: 10;
+}
 
 .avatar video {
     width: 200px;
     height: 200px;
     object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 button {
