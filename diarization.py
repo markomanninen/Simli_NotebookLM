@@ -2,14 +2,18 @@ import os
 import time
 import warnings
 import torch
+from dotenv import load_dotenv
 from pyannote.audio import Pipeline
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Suppress specific warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Retrieve the Hugging Face token from environment variables
-hf_token = os.getenv("HF_TOKEN", "your-default-token-here")  # Make sure to set this token in your environment
+hf_token = os.getenv("HF_TOKEN")
 
 # Global pipeline variable to avoid reinitializing the model on each request
 pipeline = None
@@ -49,6 +53,11 @@ def diarize_audio(audio_file_path, model, num_speakers=None):
 
     # Write results to a text file in the expected format
     with open("diarization_results.txt", "w") as f:
+        
+        # Init speakers from the beginning
+        #f.write(f"SPEAKER_00: 0.00 to 0.00\n")
+        #f.write(f"SPEAKER_01: 0.00 to 0.00\n")
+            
         for turn, _, speaker in diarization.itertracks(yield_label=True):
             start_time = turn.start
             end_time = turn.end
